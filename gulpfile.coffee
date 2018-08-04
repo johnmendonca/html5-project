@@ -3,7 +3,6 @@ sass = require 'gulp-sass'
 connect = require 'gulp-connect'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
-bower_files = require 'main-bower-files'
 markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
@@ -17,6 +16,7 @@ html_src  = "#{src}html/**/*.html"
 sass_src  = "#{src}sass/**/*.scss"
 asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
+js        = "#{src}js/"
 
 gulp.task 'server', ->
   connect.server
@@ -24,15 +24,12 @@ gulp.task 'server', ->
     livereload: true
 
 gulp.task 'ie8_js', ->
-  gulp.src bower_files
-      filter: ["**/*respond*", "**/*shiv*"]
+  gulp.src "#{js}ie8/*.js"
     .pipe concat "ie8.js"
-    .pipe uglify()
     .pipe gulp.dest("#{build}js")
 
 gulp.task 'vendor_js', ->
-  gulp.src bower_files
-      filter: "**/!(*respond*|*shiv*).js"
+  gulp.src "#{js}vendor/**/*.js"
     .pipe concat "vendor.js"
     .pipe uglify()
     .pipe gulp.dest("#{build}js")
@@ -47,7 +44,7 @@ gulp.task 'sass', ->
     .pipe sass(
       style: 'compressed',
       includePaths: [
-        './bower_components/normalize-scss']
+        './node_modules/normalize-scss/sass/']
       ).on('error', sass.logError)
     .pipe gulp.dest("#{build}css")
     .pipe connect.reload()

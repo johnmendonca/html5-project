@@ -1,7 +1,7 @@
 {
   "name": "html5-project",
-  "version": "0.1.0",
-  "description": "HTML5 project template using npm, bower, and gulp.",
+  "version": "0.2.0",
+  "description": "HTML5 project template using npm and gulp.",
   "author": "John Mendonca",
   "repository": "https://github.com/johnmendonca/html5-project",
   "license": "MIT",
@@ -16,6 +16,6 @@
     "gulp-sass": "^4.0.1",
     "gulp-uglify": "^3.0.0",
     "gulp-wrap": "^0.14.0",
-    "main-bower-files": "^2.13.1"
+    "normalize-scss": "^7.0.1"
   }
 }
