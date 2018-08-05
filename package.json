@@ -6,6 +6,7 @@
   "repository": "https://github.com/johnmendonca/html5-project",
   "license": "MIT",
   "devDependencies": {
+    "@salesforce-ux/design-system": "^2.6.2",
     "coffeescript": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",

@@ -44,7 +44,8 @@ gulp.task 'sass', ->
     .pipe sass(
       style: 'compressed',
       includePaths: [
-        './node_modules/normalize-scss/sass/']
+        './node_modules/normalize-scss/sass/',
+        './node_modules/@salesforce-ux/design-system/scss/']
       ).on('error', sass.logError)
     .pipe gulp.dest("#{build}css")
     .pipe connect.reload()

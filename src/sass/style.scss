@@ -1,7 +1,17 @@
-@import 'normalize.scss';
-@import 'html5-boilerplate/layout';
-@import 'html5-boilerplate/navigation';
-@import 'html5-boilerplate/style';
-@import 'html5-boilerplate/helper';
-@import 'html5-boilerplate/print';
+
+// Lightning Design System
+
+@import 'init';
+
+// Resets
+@import 'vendor/normalize';
+@include core($scoped: false, $globals: true);
+
+// Framework
+@import 'touch/index';
+//@import 'components/index';
+//@import 'utilities/index';
+
+// Print
+@import 'vendor/html5boilerplate-print';
 
