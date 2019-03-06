@@ -66,12 +66,12 @@ gulp.task 'md', ->
     .pipe connect.reload()
 
 gulp.task 'watch', ->
-  gulp.watch asset_src, ['assets']
-  gulp.watch sass_src, ['sass']
-  gulp.watch html_src, ['html']
-  gulp.watch md_src, ['md']
-  gulp.watch "#{templates}**", ['md']
+  gulp.watch asset_src, gulp.series ['assets']
+  gulp.watch sass_src, gulp.series ['sass']
+  gulp.watch html_src, gulp.series ['html']
+  gulp.watch md_src, gulp.series ['md']
+  gulp.watch "#{templates}**", gulp.series ['md']
 
-gulp.task 'build', ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'md']
-gulp.task 'default', ['build', 'server', 'watch']
+gulp.task 'build', gulp.parallel ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'md']
+gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
 
