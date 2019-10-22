@@ -8,6 +8,10 @@ wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
 ext_replace = require 'gulp-ext-replace'
 
+postcss = require 'gulp-postcss'
+autoprefixer = require 'autoprefixer'
+cssnano = require 'cssnano'
+
 src   = './src/'
 build = './build/'
 
@@ -46,6 +50,9 @@ gulp.task 'sass', ->
       includePaths: [
         './node_modules/normalize-scss/sass/']
       ).on('error', sass.logError)
+    .pipe postcss [
+      autoprefixer(),
+      cssnano() ]
     .pipe gulp.dest("#{build}css")
     .pipe connect.reload()
 
