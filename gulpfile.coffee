@@ -30,17 +30,17 @@ gulp.task 'server', ->
 gulp.task 'ie8_js', ->
   gulp.src "#{js}ie8/*.js"
     .pipe concat "ie8.js"
-    .pipe gulp.dest("#{build}js")
+    .pipe gulp.dest "#{build}js"
 
 gulp.task 'vendor_js', ->
   gulp.src "#{js}vendor/**/*.js"
     .pipe concat "vendor.js"
     .pipe uglify()
-    .pipe gulp.dest("#{build}js")
+    .pipe gulp.dest "#{build}js"
 
 gulp.task 'assets', ->
   gulp.src asset_src
-    .pipe gulp.dest("#{build}")
+    .pipe gulp.dest build
     .pipe connect.reload()
 
 gulp.task 'sass', ->
@@ -53,23 +53,23 @@ gulp.task 'sass', ->
     .pipe postcss [
       autoprefixer(),
       cssnano() ]
-    .pipe gulp.dest("#{build}css")
+    .pipe gulp.dest "#{build}css"
     .pipe connect.reload()
 
 gulp.task 'html', ->
   gulp.src html_src
-    .pipe gulp.dest(build)
+    .pipe gulp.dest build
     .pipe connect.reload()
 
 gulp.task 'md', ->
   gulp.src md_src
-    .pipe front_matter(
+    .pipe front_matter
       property: 'front',
-      remove: true)
+      remove: true
     .pipe markdown()
     .pipe wrap(src: "#{templates}layout.html")
-    .pipe ext_replace('.html')
-    .pipe gulp.dest(build)
+    .pipe ext_replace '.html'
+    .pipe gulp.dest build
     .pipe connect.reload()
 
 gulp.task 'watch', ->
