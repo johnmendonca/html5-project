@@ -27,11 +27,6 @@ gulp.task 'server', ->
     root: build,
     livereload: true
 
-gulp.task 'ie8_js', ->
-  gulp.src "#{js}ie8/*.js"
-    .pipe concat "ie8.js"
-    .pipe gulp.dest "#{build}js"
-
 gulp.task 'vendor_js', ->
   gulp.src "#{js}vendor/**/*.js"
     .pipe concat "vendor.js"
@@ -79,6 +74,6 @@ gulp.task 'watch', ->
   gulp.watch md_src, gulp.series ['md']
   gulp.watch "#{templates}**", gulp.series ['md']
 
-gulp.task 'build', gulp.parallel ['ie8_js', 'vendor_js', 'assets', 'sass', 'html', 'md']
+gulp.task 'build', gulp.parallel ['vendor_js', 'assets', 'sass', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
 
