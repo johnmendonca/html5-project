@@ -7,10 +7,11 @@ markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
 ext_replace = require 'gulp-ext-replace'
-
 postcss = require 'gulp-postcss'
 autoprefixer = require 'autoprefixer'
 cssnano = require 'cssnano'
+bro = require 'gulp-bro'
+babelify = require 'babelify'
 
 src   = './src/'
 build = './build/'
@@ -20,16 +21,24 @@ html_src  = "#{src}html/**/*.html"
 sass_src  = "#{src}sass/**/*.scss"
 asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
-js        = "#{src}js/"
+js_src    = "#{src}js/**/*.js"
+es6_src   = "#{src}es6/**/*.js"
 
 gulp.task 'server', ->
   connect.server
     root: build,
     livereload: true
 
-gulp.task 'vendor_js', ->
-  gulp.src "#{js}vendor/**/*.js"
+gulp.task 'js', ->
+  gulp.src js_src
     .pipe concat "vendor.js"
+    .pipe uglify()
+    .pipe gulp.dest "#{build}js"
+
+gulp.task 'es6', ->
+  gulp.src "#{src}es6/app.js"
+    .pipe bro transform: [
+      babelify.configure presets: ['@babel/preset-env'] ]
     .pipe uglify()
     .pipe gulp.dest "#{build}js"
 
@@ -72,8 +81,10 @@ gulp.task 'watch', ->
   gulp.watch sass_src, gulp.series ['sass']
   gulp.watch html_src, gulp.series ['html']
   gulp.watch md_src, gulp.series ['md']
+  gulp.watch js_src, gulp.series ['js']
+  gulp.watch es6_src, gulp.series ['es6']
   gulp.watch "#{templates}**", gulp.series ['md']
 
-gulp.task 'build', gulp.parallel ['vendor_js', 'assets', 'sass', 'html', 'md']
+gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'sass', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
 
