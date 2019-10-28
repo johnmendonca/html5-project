@@ -62,6 +62,10 @@ gulp.task 'css', ->
 
 gulp.task 'html', ->
   gulp.src html_src
+    .pipe front_matter
+      property: 'front',
+      remove: true
+    .pipe wrap(src: "#{templates}layout.html")
     .pipe gulp.dest build
     .pipe connect.reload()
 
