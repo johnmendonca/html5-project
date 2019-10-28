@@ -1,7 +1,11 @@
-@import 'normalize.scss';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+
 @import 'html5-boilerplate/layout';
 @import 'html5-boilerplate/navigation';
 @import 'html5-boilerplate/style';
 @import 'html5-boilerplate/helper';
 @import 'html5-boilerplate/print';
+
+@import 'tailwindcss/utilities';
 

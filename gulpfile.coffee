@@ -1,5 +1,4 @@
 gulp = require 'gulp'
-sass = require 'gulp-sass'
 connect = require 'gulp-connect'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
@@ -8,7 +7,10 @@ wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
 ext_replace = require 'gulp-ext-replace'
 postcss = require 'gulp-postcss'
-autoprefixer = require 'autoprefixer'
+postcss_import = require 'postcss-import'
+postcss_preset_env = require 'postcss-preset-env'
+tailwindcss = require 'tailwindcss'
+purgecss = require '@fullhuman/postcss-purgecss'
 cssnano = require 'cssnano'
 bro = require 'gulp-bro'
 babelify = require 'babelify'
@@ -18,7 +20,7 @@ build = './build/'
 
 templates = "#{src}templates/"
 html_src  = "#{src}html/**/*.html"
-sass_src  = "#{src}sass/**/*.scss"
+css_src   = "#{src}css/**/*.css"
 asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
 js_src    = "#{src}js/**/*.js"
@@ -47,15 +49,13 @@ gulp.task 'assets', ->
     .pipe gulp.dest build
     .pipe connect.reload()
 
-gulp.task 'sass', ->
-  gulp.src sass_src
-    .pipe sass(
-      style: 'compressed',
-      includePaths: [
-        './node_modules/normalize-scss/sass/']
-      ).on('error', sass.logError)
+gulp.task 'css', ->
+  gulp.src "#{src}css/*.css"
     .pipe postcss [
-      autoprefixer(),
+      postcss_import(),
+      tailwindcss(),
+      postcss_preset_env(),
+      purgecss(content: ["#{templates}**/*.html"]),
       cssnano() ]
     .pipe gulp.dest "#{build}css"
     .pipe connect.reload()
@@ -78,13 +78,13 @@ gulp.task 'md', ->
 
 gulp.task 'watch', ->
   gulp.watch asset_src, gulp.series ['assets']
-  gulp.watch sass_src, gulp.series ['sass']
+  gulp.watch css_src, gulp.series ['css']
   gulp.watch html_src, gulp.series ['html']
   gulp.watch md_src, gulp.series ['md']
   gulp.watch js_src, gulp.series ['js']
   gulp.watch es6_src, gulp.series ['es6']
-  gulp.watch "#{templates}**", gulp.series ['md']
+  gulp.watch "#{templates}**", gulp.series ['md','css']
 
-gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'sass', 'html', 'md']
+gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'css', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
 
