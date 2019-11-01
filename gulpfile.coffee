@@ -55,7 +55,7 @@ gulp.task 'css', ->
       postcss_import(),
       tailwindcss(),
       postcss_preset_env(),
-      purgecss(content: ["#{templates}**/*.html"]),
+      purgecss(content: ["#{templates}**/*.html", html_src]),
       cssnano() ]
     .pipe gulp.dest "#{build}css"
     .pipe connect.reload()
@@ -83,11 +83,11 @@ gulp.task 'md', ->
 gulp.task 'watch', ->
   gulp.watch asset_src, gulp.series ['assets']
   gulp.watch css_src, gulp.series ['css']
-  gulp.watch html_src, gulp.series ['html']
+  gulp.watch html_src, gulp.parallel ['html','css']
   gulp.watch md_src, gulp.series ['md']
   gulp.watch js_src, gulp.series ['js']
   gulp.watch es6_src, gulp.series ['es6']
-  gulp.watch "#{templates}**", gulp.series ['md','css']
+  gulp.watch "#{templates}**", gulp.parallel ['html','md','css']
 
 gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'css', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
