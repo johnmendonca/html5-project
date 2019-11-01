@@ -36,6 +36,7 @@ gulp.task 'js', ->
     .pipe concat "vendor.js"
     .pipe uglify()
     .pipe gulp.dest "#{build}js"
+    .pipe connect.reload()
 
 gulp.task 'es6', ->
   gulp.src "#{src}es6/app.js"
@@ -48,6 +49,7 @@ gulp.task 'es6', ->
       ]]
     .pipe uglify()
     .pipe gulp.dest "#{build}js"
+    .pipe connect.reload()
 
 gulp.task 'assets', ->
   gulp.src asset_src
