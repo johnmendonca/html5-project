@@ -40,7 +40,12 @@ gulp.task 'js', ->
 gulp.task 'es6', ->
   gulp.src "#{src}es6/app.js"
     .pipe bro transform: [
-      babelify.configure presets: ['@babel/preset-env'] ]
+      ['babelify',
+        presets: ['@babel/preset-env'],
+        #Use the following if you import an es6 package
+        #global: true,
+        #ignore:  [/\/node_modules\/(?!my-import\/)/]
+      ]]
     .pipe uglify()
     .pipe gulp.dest "#{build}js"
 
