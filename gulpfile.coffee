@@ -26,10 +26,11 @@ md_src    = "#{src}md/**/*.md"
 js_src    = "#{src}js/**/*.js"
 es6_src   = "#{src}es6/**/*.js"
 
-gulp.task 'server', ->
+gulp.task 'server', (done) ->
   connect.server
     root: build,
     livereload: true
+  done()
 
 gulp.task 'js', ->
   gulp.src js_src
@@ -87,7 +88,7 @@ gulp.task 'md', ->
     .pipe gulp.dest build
     .pipe connect.reload()
 
-gulp.task 'watch', ->
+gulp.task 'watch', (done) ->
   gulp.watch asset_src, gulp.series ['assets']
   gulp.watch css_src, gulp.series ['css']
   gulp.watch './tailwind.config.js', gulp.series ['css']
@@ -96,6 +97,7 @@ gulp.task 'watch', ->
   gulp.watch js_src, gulp.series ['js']
   gulp.watch es6_src, gulp.series ['es6']
   gulp.watch "#{templates}**", gulp.parallel ['html','md','css']
+  done()
 
 gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'css', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
