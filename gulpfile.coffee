@@ -90,6 +90,7 @@ gulp.task 'md', ->
 gulp.task 'watch', ->
   gulp.watch asset_src, gulp.series ['assets']
   gulp.watch css_src, gulp.series ['css']
+  gulp.watch './tailwind.config.js', gulp.series ['css']
   gulp.watch html_src, gulp.parallel ['html','css']
   gulp.watch md_src, gulp.series ['md']
   gulp.watch js_src, gulp.series ['js']
