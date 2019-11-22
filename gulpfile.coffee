@@ -12,8 +12,8 @@ postcss_preset_env = require 'postcss-preset-env'
 tailwindcss = require 'tailwindcss'
 purgecss = require '@fullhuman/postcss-purgecss'
 cssnano = require 'cssnano'
-bro = require 'gulp-bro'
-babelify = require 'babelify'
+webpackStream = require 'webpack-stream'
+webpack = require 'webpack'
 
 src   = './src/'
 build = './build/'
@@ -41,14 +41,21 @@ gulp.task 'js', ->
 
 gulp.task 'es6', ->
   gulp.src "#{src}es6/app.js"
-    .pipe bro transform: [
-      ['babelify',
-        presets: ['@babel/preset-env'],
-        #Use the following if you import an es6 package
-        #global: true,
-        #ignore:  [/\/node_modules\/(?!my-import\/)/]
-      ]]
-    .pipe uglify()
+    .pipe webpackStream
+      mode: 'production'
+      #devtool: 'source-map'
+      output:
+        filename: 'app.js'
+      module:
+        rules: [
+          test: /\.m?js$/
+          exclude: /(node_modules|bower_components)/
+          #exclude: /(node_modules\/(?!my-import)|bower_components)/
+          use:
+            loader: 'babel-loader'
+            options:
+              presets: ['@babel/preset-env'] ]
+      webpack
     .pipe gulp.dest "#{build}js"
     .pipe connect.reload()
 
