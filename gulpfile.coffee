@@ -6,6 +6,7 @@ markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
 ext_replace = require 'gulp-ext-replace'
+rename = require 'gulp-rename'
 postcss = require 'gulp-postcss'
 postcss_import = require 'postcss-import'
 postcss_preset_env = require 'postcss-preset-env'
@@ -75,12 +76,19 @@ gulp.task 'css', ->
     .pipe gulp.dest "#{build}css"
     .pipe connect.reload()
 
+# foo.html -> foo/index.html
+html_dir_index = (path) ->
+  return if path.basename == 'index'
+  path.dirname += "/#{path.basename}"
+  path.basename = 'index'
+
 gulp.task 'html', ->
   gulp.src html_src
     .pipe front_matter
       property: 'front',
       remove: true
     .pipe wrap(src: "#{templates}layout.html")
+    .pipe rename html_dir_index
     .pipe gulp.dest build
     .pipe connect.reload()
 
@@ -92,6 +100,7 @@ gulp.task 'md', ->
     .pipe markdown()
     .pipe wrap(src: "#{templates}layout.html")
     .pipe ext_replace '.html'
+    .pipe rename html_dir_index
     .pipe gulp.dest build
     .pipe connect.reload()
 
