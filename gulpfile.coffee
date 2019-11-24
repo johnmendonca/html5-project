@@ -1,7 +1,5 @@
 gulp = require 'gulp'
 connect = require 'gulp-connect'
-concat = require 'gulp-concat'
-uglify = require 'gulp-uglify'
 markdown = require 'gulp-markdown'
 wrap = require 'gulp-wrap'
 front_matter = require 'gulp-front-matter'
@@ -24,8 +22,7 @@ html_src  = "#{src}html/**/*.html"
 css_src   = "#{src}css/**/*.css"
 asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
-js_src    = "#{src}js/**/*.js"
-es6_src   = "#{src}es6/**/*.js"
+js_src    = "#{src}js/**/*"
 
 gulp.task 'server', (done) ->
   connect.server
@@ -34,14 +31,7 @@ gulp.task 'server', (done) ->
   done()
 
 gulp.task 'js', ->
-  gulp.src js_src
-    .pipe concat "vendor.js"
-    .pipe uglify()
-    .pipe gulp.dest "#{build}js"
-    .pipe connect.reload()
-
-gulp.task 'es6', ->
-  gulp.src "#{src}es6/app.js"
+  gulp.src "#{src}js/app.js"
     .pipe webpackStream
       mode: 'production'
       #devtool: 'source-map'
@@ -111,10 +101,9 @@ gulp.task 'watch', (done) ->
   gulp.watch html_src, gulp.parallel ['html','css']
   gulp.watch md_src, gulp.series ['md']
   gulp.watch js_src, gulp.series ['js']
-  gulp.watch es6_src, gulp.series ['es6']
   gulp.watch "#{templates}**", gulp.parallel ['html','md','css']
   done()
 
-gulp.task 'build', gulp.parallel ['es6', 'js', 'assets', 'css', 'html', 'md']
+gulp.task 'build', gulp.parallel ['js', 'assets', 'css', 'html', 'md']
 gulp.task 'default', gulp.series ['build', gulp.parallel ['server', 'watch'] ]
 
