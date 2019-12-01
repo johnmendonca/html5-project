@@ -16,6 +16,7 @@ webpack = require 'webpack'
 
 src   = './src/'
 build = './build/'
+build_dev = './build_dev/'
 
 templates = "#{src}templates/"
 html_src  = "#{src}html/**/*.html"
@@ -26,45 +27,61 @@ js_src    = "#{src}js/**/*"
 
 gulp.task 'server', (done) ->
   connect.server
-    root: build,
+    root: build_dev,
     livereload: true
   done()
 
-gulp.task 'js', ->
+webpack_common =
+  output:
+    filename: 'app.js'
+  module:
+    rules: [
+      test: /\.m?js$/
+      exclude: /(node_modules|bower_components)/
+      #exclude: /(node_modules\/(?!my-import)|bower_components)/
+      use:
+        loader: 'babel-loader'
+        options:
+          presets: ['@babel/preset-env'] ]
+
+gulp.task 'js_dev', ->
   gulp.src "#{src}js/app.js"
-    .pipe webpackStream
-      mode: 'production'
-      #devtool: 'source-map'
-      output:
-        filename: 'app.js'
-      module:
-        rules: [
-          test: /\.m?js$/
-          exclude: /(node_modules|bower_components)/
-          #exclude: /(node_modules\/(?!my-import)|bower_components)/
-          use:
-            loader: 'babel-loader'
-            options:
-              presets: ['@babel/preset-env'] ]
-      webpack
-    .pipe gulp.dest "#{build}js"
+    .pipe webpackStream {
+      webpack_common...,
+      mode: 'development',
+      devtool: 'source-map'
+    }, webpack
+    .pipe gulp.dest "#{build_dev}js"
     .pipe connect.reload()
+
+gulp.task 'js_prod', ->
+  gulp.src "#{src}js/app.js"
+    .pipe webpackStream {
+      webpack_common...,
+      mode: 'production'
+    }, webpack
+    .pipe gulp.dest "#{build}js"
+
+gulp.task 'js', gulp.series ['js_dev', 'js_prod']
 
 gulp.task 'assets', ->
   gulp.src asset_src
-    .pipe gulp.dest build
+    .pipe gulp.dest build_dev
     .pipe connect.reload()
+    .pipe gulp.dest build
 
 gulp.task 'css', ->
   gulp.src "#{src}css/*.css"
     .pipe postcss [
       postcss_import(),
       tailwindcss(),
-      postcss_preset_env(),
+      postcss_preset_env() ]
+    .pipe gulp.dest "#{build_dev}css"
+    .pipe connect.reload()
+    .pipe postcss [
       purgecss(content: ["#{templates}**/*.html", html_src]),
       cssnano() ]
     .pipe gulp.dest "#{build}css"
-    .pipe connect.reload()
 
 # foo.html -> foo/index.html
 html_dir_index = (path) ->
@@ -79,8 +96,9 @@ gulp.task 'html', ->
       remove: true
     .pipe wrap(src: "#{templates}layout.html")
     .pipe rename html_dir_index
-    .pipe gulp.dest build
+    .pipe gulp.dest build_dev
     .pipe connect.reload()
+    .pipe gulp.dest build
 
 gulp.task 'md', ->
   gulp.src md_src
@@ -91,8 +109,9 @@ gulp.task 'md', ->
     .pipe wrap(src: "#{templates}layout.html")
     .pipe ext_replace '.html'
     .pipe rename html_dir_index
-    .pipe gulp.dest build
+    .pipe gulp.dest build_dev
     .pipe connect.reload()
+    .pipe gulp.dest build
 
 gulp.task 'watch', (done) ->
   gulp.watch asset_src, gulp.series ['assets']
