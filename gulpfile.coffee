@@ -25,12 +25,6 @@ asset_src = "#{src}assets/**/*"
 md_src    = "#{src}md/**/*.md"
 js_src    = "#{src}js/**/*"
 
-gulp.task 'server', (done) ->
-  connect.server
-    root: build_dev,
-    livereload: true
-  done()
-
 webpack_common =
   output:
     filename: 'app.js'
@@ -64,12 +58,6 @@ gulp.task 'js_prod', ->
 
 gulp.task 'js', gulp.series ['js_dev', 'js_prod']
 
-gulp.task 'assets', ->
-  gulp.src asset_src
-    .pipe gulp.dest build_dev
-    .pipe connect.reload()
-    .pipe gulp.dest build
-
 gulp.task 'css', ->
   gulp.src "#{src}css/*.css"
     .pipe postcss [
@@ -83,7 +71,7 @@ gulp.task 'css', ->
       cssnano() ]
     .pipe gulp.dest "#{build}css"
 
-# foo.html -> foo/index.html
+# Rename foo.html -> foo/index.html
 html_dir_index = (path) ->
   return if path.basename == 'index'
   path.dirname += "/#{path.basename}"
@@ -113,14 +101,25 @@ gulp.task 'md', ->
     .pipe connect.reload()
     .pipe gulp.dest build
 
+gulp.task 'assets', ->
+  gulp.src asset_src
+    .pipe gulp.dest build_dev
+    .pipe connect.reload()
+    .pipe gulp.dest build
+
 gulp.task 'watch', (done) ->
-  gulp.watch asset_src, gulp.series ['assets']
-  gulp.watch css_src, gulp.series ['css']
-  gulp.watch './tailwind.config.js', gulp.series ['css']
+  gulp.watch js_src, gulp.task 'js'
+  gulp.watch [css_src, './tailwind.config.js'], gulp.task 'css'
   gulp.watch html_src, gulp.parallel ['html','css']
-  gulp.watch md_src, gulp.series ['md']
-  gulp.watch js_src, gulp.series ['js']
+  gulp.watch md_src, gulp.task 'md'
+  gulp.watch asset_src, gulp.task 'assets'
   gulp.watch "#{templates}**", gulp.parallel ['html','md','css']
+  done()
+
+gulp.task 'server', (done) ->
+  connect.server
+    root: build_dev,
+    livereload: true
   done()
 
 gulp.task 'build', gulp.parallel ['js', 'assets', 'css', 'html', 'md']
