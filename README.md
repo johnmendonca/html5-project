@@ -8,7 +8,7 @@ Gulp allows you to write your build in JavaScript code rather than a JSON config
 coffee -p gulpfile.coffee > gulpfile.js
 ```
 
-###Features
+### Features
 
  * HTML and Markdown pages with layout
  * CSS processing with PostCSS and TailwindCSS
