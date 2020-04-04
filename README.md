@@ -1,12 +1,8 @@
 ## html5-project
 
-A front-end project template using Gulp and Webpack.
+A front-end project template using Gulp, Webpack, and PostCSS.
 
-Gulp allows you to write your build in JavaScript code rather than a JSON config.  I have chosen to use CoffeeScript because it is concise.  If you want to use plain JavaScript, you can easily do so:
-
-```
-coffee -p gulpfile.coffee > gulpfile.js
-```
+Gulp allows you to write your build in JavaScript code rather than a JSON config.  I am using the `esm` module to allow new import/export syntax in the gulpfile.
 
 ### Features
 
