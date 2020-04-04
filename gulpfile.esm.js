@@ -6,11 +6,6 @@ import front_matter       from 'gulp-front-matter'
 import ext_replace        from 'gulp-ext-replace'
 import rename             from 'gulp-rename'
 import postcss            from 'gulp-postcss'
-import postcss_import     from 'postcss-import'
-import postcss_preset_env from 'postcss-preset-env'
-import tailwindcss        from 'tailwindcss'
-import purgecss           from '@fullhuman/postcss-purgecss'
-import cssnano            from 'cssnano'
 import webpackStream      from 'webpack-stream'
 import webpack            from 'webpack'
 
@@ -40,25 +35,9 @@ export const js = series(js_dev, js_prod)
 
 export const css = () =>
   src(`${src_root}css/*.css`)
-    .pipe(postcss([
-      postcss_import(),
-      tailwindcss(),
-      postcss_preset_env({
-        // need this for compatability with @tailwindcss/ui
-        features: {
-          'focus-within-pseudo-class': false
-        }
-      })
-    ]))
+    .pipe(postcss())
     .pipe(dest(`${dest_dev}css`))
-    .pipe(connect.reload())
-    .pipe(postcss([
-      purgecss({
-        content: [`${templates}**/*.html`, html_src],
-        defaultExtractor: content => content.match(/[\w-/.:]+(?<!:)/g) || []
-      }),
-      cssnano()
-    ]))
+    .pipe(postcss({env: 'production'}))
     .pipe(dest(`${dest_prod}css`))
 
 // Rename foo.html -> foo/index.html
