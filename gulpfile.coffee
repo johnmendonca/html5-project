@@ -67,7 +67,8 @@ gulp.task 'css', ->
     .pipe gulp.dest "#{build_dev}css"
     .pipe connect.reload()
     .pipe postcss [
-      purgecss(content: ["#{templates}**/*.html", html_src]),
+      purgecss
+        content: ["#{templates}**/*.html", html_src]
       cssnano() ]
     .pipe gulp.dest "#{build}css"
 
