@@ -43,13 +43,19 @@ export const css = () =>
     .pipe(postcss([
       postcss_import(),
       tailwindcss(),
-      postcss_preset_env()
+      postcss_preset_env({
+        // need this for compatability with @tailwindcss/ui
+        features: {
+          'focus-within-pseudo-class': false
+        }
+      })
     ]))
     .pipe(dest(`${dest_dev}css`))
     .pipe(connect.reload())
     .pipe(postcss([
       purgecss({
-        content: [`${templates}**/*.html`, html_src]
+        content: [`${templates}**/*.html`, html_src],
+        defaultExtractor: content => content.match(/[\w-/.:]+(?<!:)/g) || []
       }),
       cssnano()
     ]))
