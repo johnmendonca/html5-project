@@ -25,43 +25,15 @@ const asset_src = `${src_root}assets/**/*`
 const md_src    = `${src_root}md/**/*.md`
 const js_src    = `${src_root}js/**/*`
 
-const webpack_common = {
-  output: {
-    filename: 'app.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        //exclude: /(node_modules\/(?!my-import)|bower_components)/
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
-  }
-}
-
 const js_dev = () =>
   src(`${src_root}js/app.js`)
-    .pipe(webpackStream({
-      ...webpack_common,
-      mode: 'development',
-      devtool: 'source-map'
-    }, webpack))
+    .pipe(webpackStream(require('./webpack.dev.js'), webpack))
     .pipe(dest(`${dest_dev}js`))
     .pipe(connect.reload())
 
 const js_prod = () =>
   src(`${src_root}js/app.js`)
-    .pipe(webpackStream({
-      ...webpack_common,
-      mode: 'production'
-    }, webpack))
+    .pipe(webpackStream(require('./webpack.prod.js'), webpack))
     .pipe(dest(`${dest_prod}js`))
 
 export const js = series(js_dev, js_prod)
