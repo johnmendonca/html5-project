@@ -88,10 +88,10 @@ export const assets = () =>
 const watch_all = (done) => {
   watch(js_src, js)
   watch([css_src, './tailwind.config.js'], css)
-  watch(html_src, parallel(html, css))
+  watch(html_src, html)
   watch(md_src, md)
   watch(asset_src, assets)
-  watch(`${templates}**`, parallel(html, md, css))
+  watch(`${templates}**`, parallel(html, md))
   done()
 }
 
